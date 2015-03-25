@@ -31,5 +31,4 @@ proguard/
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store
-/build
->>>>>>> c87596ece7ff4a85cfe85951a10f7752177802b1
+
