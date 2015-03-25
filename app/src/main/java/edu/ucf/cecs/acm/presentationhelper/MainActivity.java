@@ -1,5 +1,6 @@
 package edu.ucf.cecs.acm.presentationhelper;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +12,21 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.splash);
+        Thread logoTimer = new Thread(){
+            public void run(){
+                try{
+                    sleep(5000);
+                    Intent menuIntent = new Intent("edu.ucf.cecs.acm.MENU");
+                    startActivity(menuIntent);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally{
+                    finish();
+                }
+            }
+        };
+        logoTimer.start();
     }
 
 
