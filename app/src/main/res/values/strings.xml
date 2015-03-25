@@ -7,4 +7,5 @@
     <string name="title_activity_edit_presentation">EditPresentationActivity</string>
     <string name="title_activity_start_presentation">StartPresentationActivity</string>
     <string name="title_activity_custom_cues">CustomCuesActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
 </resources>

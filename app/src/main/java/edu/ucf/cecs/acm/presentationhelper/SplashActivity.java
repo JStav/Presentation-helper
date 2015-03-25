@@ -7,20 +7,33 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends ActionBarActivity {
+public class SplashActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_splash);
+        Thread logoTimer = new Thread(){
+            public void run(){
+                try{
+                    sleep(5000);
+                    Intent menuIntent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(menuIntent);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally{
+                    finish();
+                }
+            }
+        };
+        logoTimer.start();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_splash, menu);
         return true;
     }
 
