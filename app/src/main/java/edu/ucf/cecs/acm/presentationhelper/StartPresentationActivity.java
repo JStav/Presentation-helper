@@ -1,5 +1,7 @@
 package edu.ucf.cecs.acm.presentationhelper;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -36,4 +38,10 @@ public class StartPresentationActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void silencePhone(){
+        AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audio.setRingerMode(0);
+    }
+
 }
