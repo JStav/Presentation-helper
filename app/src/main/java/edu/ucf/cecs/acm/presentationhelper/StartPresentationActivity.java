@@ -39,9 +39,24 @@ public class StartPresentationActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void silencePhone(){
+
+    private class AudioState {
+
         AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audio.setRingerMode(0);
+        int prevMode = audio.getRingerMode();
+
+
+        private void silence(){
+
+            audio.setRingerMode(0);
+
+        }
+
+        private void unsilence(){
+
+            audio.setRingerMode(prevMode);
+        }
+
     }
 
 }
