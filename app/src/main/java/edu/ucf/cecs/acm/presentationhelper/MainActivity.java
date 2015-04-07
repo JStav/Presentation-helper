@@ -1,19 +1,40 @@
 package edu.ucf.cecs.acm.presentationhelper;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    public Vibrator vibe;
+    public Vibrator warning;
+    public Vibrator change;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+    }
+
+    //vibrations for a 10 second warning, and to change slides. warning for 3 quick vibrations. change for one longer vibration.
+    public void VibrationCalls(View v) {
+        long[] warn = {50,50,50};
+        warning = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        change = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        warning.vibrate(warn, -1);
+        change.vibrate(600);
+    }
+
+    public void onClickVibrate(View v){
+        vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibe.vibrate(25);
     }
 
 

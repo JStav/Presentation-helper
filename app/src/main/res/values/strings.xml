@@ -9,5 +9,12 @@
     <string name="title_activity_start_presentation">StartPresentationActivity</string>
     <string name="title_activity_custom_cues">CustomCuesActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="New">New Presentation</string>
+    <string name="Edit">Edit a Presentation</string>
+    <string name="Start">Start Presentation</string>
+    <string name="title">Presentation Helper</string>
+    <string name="hint_new">Create a new presentation</string>
+    <string name="hint_edit">Edit a previously created presentation</string>
+    <string name="hint_start">Start the Presentation Helper</string>
 
 </resources>
