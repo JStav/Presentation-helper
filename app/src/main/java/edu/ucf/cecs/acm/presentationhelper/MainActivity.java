@@ -1,24 +1,13 @@
-package sigmobileapp.presentation_helper;
+package edu.ucf.cecs.acm.presentationhelper;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.content.Context;
-import android.os.Vibrator;
-import android.view.View;
-
 
 
 public class MainActivity extends ActionBarActivity {
-
-    //create a vibrator for the buttons in MAIN UNFINISHED. cant get to appear in the onClick resource in XML.
-    Vibrator vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-    public void onClick(View view) {
-         vibe.vibrate(150);
-     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
