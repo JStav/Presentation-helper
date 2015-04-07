@@ -1,17 +1,32 @@
 package edu.ucf.cecs.acm.presentationhelper;
 
+import android.app.Notification;
+import android.content.Context;
+import android.media.AudioManager;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import static android.os.SystemClock.sleep;
+
 
 public class StartPresentationActivity extends ActionBarActivity {
+
+    // -1 = uninitialized, 0 = silent, 1 = vibrate, >1 = volume levels
+    int prevSilenceMode = -1;
+    AudioManager audio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_presentation);
+
+        // Used for silence() and unsilence()
+        audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+
     }
 
 
@@ -36,4 +51,26 @@ public class StartPresentationActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+    public void silence(){
+
+        prevSilenceMode = audio.getRingerMode();
+        audio.setRingerMode(0);
+
+    }
+
+
+    public void unsilence(){
+
+        // If initialized
+        if(prevSilenceMode >= 0) {
+            audio.setRingerMode(prevSilenceMode);
+        }
+
+    }
+
+
+
 }
