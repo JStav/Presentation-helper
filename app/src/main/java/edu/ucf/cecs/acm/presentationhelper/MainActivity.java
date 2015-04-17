@@ -35,19 +35,24 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickNew(View v){
-        //vibe.vibrate(25);
+        vibe.vibrate(25);
+
+        Intent newPresIntent = new Intent(MainActivity.this, NewPresentationActivity.class);
+        startActivity(newPresIntent);
     }
 
     public void onClickEdit(View v){
-        //vibe.vibrate(25);
+        vibe.vibrate(25);
+
+        Intent editPresIntent = new Intent(MainActivity.this, EditPresentationActivity.class);
+        startActivity(editPresIntent);
     }
 
     public void onClickStart(View v){
-        //vibe.vibrate(25);
+        vibe.vibrate(25);
 
         Intent startPresIntent = new Intent(MainActivity.this, StartPresentationActivity.class);
         startActivity(startPresIntent);
-
     }
 
     @Override
