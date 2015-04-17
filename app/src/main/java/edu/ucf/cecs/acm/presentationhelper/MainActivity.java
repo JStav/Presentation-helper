@@ -32,11 +32,20 @@ public class MainActivity extends ActionBarActivity {
         change.vibrate(600);
     }
 
-    public void onClickVibrate(View v){
+    public void onClickNew(View v){
         vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         vibe.vibrate(25);
     }
 
+    public void onClickEdit(View v){
+        vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibe.vibrate(25);
+    }
+
+    public void onClickStart(View v){
+        vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibe.vibrate(25);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
