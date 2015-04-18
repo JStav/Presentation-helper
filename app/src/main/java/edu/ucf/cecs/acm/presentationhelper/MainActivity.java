@@ -21,6 +21,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+
     }
 
     //vibrations for a 10 second warning, and to change slides. warning for 3 quick vibrations. change for one longer vibration.
@@ -32,11 +34,26 @@ public class MainActivity extends ActionBarActivity {
         change.vibrate(600);
     }
 
-    public void onClickVibrate(View v){
-        vibe = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+    public void onClickNew(View v){
         vibe.vibrate(25);
+
+        Intent newPresIntent = new Intent(MainActivity.this, NewPresentationActivity.class);
+        startActivity(newPresIntent);
     }
 
+    public void onClickEdit(View v){
+        vibe.vibrate(25);
+
+        Intent editPresIntent = new Intent(MainActivity.this, EditPresentationActivity.class);
+        startActivity(editPresIntent);
+    }
+
+    public void onClickStart(View v){
+        vibe.vibrate(25);
+
+        Intent startPresIntent = new Intent(MainActivity.this, StartPresentationActivity.class);
+        startActivity(startPresIntent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
