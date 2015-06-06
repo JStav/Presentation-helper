@@ -26,6 +26,13 @@
                 android:value="edu.ucf.cecs.acm.presentationhelper.MainActivity" />
         </activity>
         <activity
+            android:name=".CustomActivity"
+            android:label="@string/title_activity_custom" >
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".EditPresentationActivity"
             android:label="@string/title_activity_edit_presentation"
             android:parentActivityName=".MainActivity" >
