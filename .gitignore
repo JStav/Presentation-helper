@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Built application files
 *.apk
 *.ap_
@@ -12,6 +12,7 @@
 # Generated files
 bin/
 gen/
+*.iml
 
 # Gradle files
 .gradle/
@@ -33,4 +34,3 @@ proguard/
 .DS_Store
 
 /build
->>>>>>> c87596ece7ff4a85cfe85951a10f7752177802b1
