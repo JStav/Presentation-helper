@@ -35,7 +35,16 @@ public class TimeGraph {
 
         Presentation_Structure current = presentation;
 
+        //Handle exceptions - divide by zero
+        if(presentation.maxDuration <= 1 || presentation.maxDuration < totalSlides){
+            presentation.totalSlides = 1;
+            presentation.maxDuration = 1;
+        }
+
         totalSlides = presentation.totalSlides;
+        sliceHeight = 180/presentation.maxDuration;
+
+
 
         width = mainLayout.getWidth();
 
@@ -54,12 +63,12 @@ public class TimeGraph {
 
         Log.i(LOG_TAG, "View width: " + Integer.toString(perWidth));
 
-        sliceHeight = 180/presentation.maxDuration;
         Log.i(LOG_TAG, "View Height: " + Integer.toString(width));
 
         mainLayout.removeAllViews();
 
 
+        //Inflate the graph columns based on the slide data
         while(current!=null){
 
             View view = new View(context);
@@ -80,22 +89,4 @@ public class TimeGraph {
 
     }
 
-    public void fillPeriodCustom(){
-
-        Log.i(LOG_TAG, "TimeGraph function working!");
-
-    }
-/*
-    private View drawTimeGraph(final int position, View convertView, ViewGroup parent){
-        View row = null;
-
-        LayoutInflater inflater = context.getLayoutInflater();
-        row = inflater.inflate(R.layout.simplerow, null);
-
-
-        highest = Collections.max(slidePeriod);
-
-        return row;
-    }
-*/
 }
