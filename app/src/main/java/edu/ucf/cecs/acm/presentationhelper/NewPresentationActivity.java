@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,12 +33,13 @@ public class NewPresentationActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_presentation);
 
-        //PipeObjects.pipe = null;
 
+        //divide equally checkbox
         equallyDivided = (CheckBox) findViewById(R.id.divideEquallyCheck);
         equallyDivided.setChecked(true);
         equallyDivided.setEnabled(false);
 
+        //custom presentation button
         customAlertButton = (Button) findViewById(R.id.customAlertButton);
         customAlertButton.setEnabled(false);
         createPresentationButton = (Button) findViewById(R.id.createPresentationButton);
@@ -47,12 +49,6 @@ public class NewPresentationActivity extends Activity {
 
         timeGraphLayout = (LinearLayout) findViewById(R.id.timeGraphLayout);
 
-       /* timeGraphLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                timeGraph.fillPeriod(NewPresentationActivity.this);
-            }
-        });*/
         timeGraph = new TimeGraph(timeGraphLayout);
 
         customAlertButton.setOnClickListener(new OnClickListener() {
@@ -118,7 +114,12 @@ public class NewPresentationActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                totalDurationData = s;
+                //check if textview is not empty else use 1(default)
+                if(s.length()!=0)
+                    totalDurationData = s;
+                else
+                    totalDurationData = "1";
+
                 if(totalDurationData!=null&&totalSlidesData != null){
                     equallyDivided.setEnabled(true);
                     presentation = Presentation_Structure.createPresentation(Integer.parseInt(totalSlidesData.toString()), Integer.parseInt(totalDurationData.toString()));
@@ -139,9 +140,15 @@ public class NewPresentationActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                totalSlidesData = s;
+                //check if textview is not empty else use 1(default)
+                if(s.length()!=0)
+                    totalSlidesData = s;
+                else
+                    totalSlidesData = "1";
+
                 if(totalDurationData!=null&&totalSlidesData != null){
                     equallyDivided.setEnabled(true);
+
                     presentation = Presentation_Structure.createPresentation(Integer.parseInt(totalSlidesData.toString()), Integer.parseInt(totalDurationData.toString()));
                     timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
                 }
