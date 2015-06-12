@@ -5,26 +5,19 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 
 public class CustomActivity extends Activity {
 
-    int screenWidth, screenHeight;
 
     LinearLayout editableViewGroup;
-    WindowManager screenObject;
-    Display display;
-    DisplayMetrics displayMetrics;
-    Presentation_Structure presentation, current;
+    PresentationStructure presentation, current;
     final int   MAX_GAP = 10,
             TOP_MARGIN = 50;
     int width, gap, sliceHeight, perWidth, totalSlides;
@@ -37,8 +30,7 @@ public class CustomActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom);
 
-        presentation = PipeObjects.pipe;
-
+        presentation = PresentationStructure.getPresentation(PresentationStructure.getTotalDuration(), PresentationStructure.getTotalSlides());
 
         editableViewGroup = (LinearLayout) findViewById(R.id.editableViewGroup);
 
@@ -56,15 +48,17 @@ public class CustomActivity extends Activity {
             public void onClick(View v) {
 
                 current = presentation;
-                totalSlides = presentation.totalSlides;
+                totalSlides = PresentationStructure.getTotalSlides();
 
                 while(current!=null){
                     view = (CustomEditText)findViewById(521450000+current.slideId());
-                    current.setDuration(Integer.parseInt(view.getText().toString()));
+                    if(view.getText().toString().equals("")/*&&Integer.parseInt(view.getText().toString())!=0*/)
+                        current.setDuration(0);
+                    else
+                        current.setDuration(Integer.parseInt(view.getText().toString()));
                     current = current.nextSlide;
                 }
 
-                PipeObjects.pipe = presentation;
 
                 Intent intent = new Intent(CustomActivity.this, NewPresentationActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -72,6 +66,7 @@ public class CustomActivity extends Activity {
                 finish();
 
             }
+
         });
 
     }
@@ -87,7 +82,7 @@ public class CustomActivity extends Activity {
         view = new CustomEditText(this);
 
         current = presentation;
-        totalSlides = presentation.totalSlides;
+        totalSlides = PresentationStructure.getTotalSlides();
 
         hiddenButton = new Button(this);
 
@@ -100,7 +95,7 @@ public class CustomActivity extends Activity {
 
             view.setHint("Edit Me");
             view.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME );
-            view.setText(Integer.toString(current.getDuration()));
+            view.setText(Integer.toString(current.getDuration()/*>60?current.getDuration()/60:1*/));
             view.setEnabled(true);
             view.setId(521450000 + current.slideId());
             view.setBackgroundColor(Color.parseColor("#537FA6"));
