@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +19,13 @@ import android.widget.TextView;
 
 public class NewPresentationActivity extends Activity {
 
-    Presentation_Structure presentation = null;
+    private static final String TAG = "NewPresentationActivity";
+
+    PresentationDatabase presentationDatabase = null;
+    PresentationStructure presentation = null;
     CharSequence totalDurationData = null, totalSlidesData = null;
     LinearLayout timeGraphLayout;
-    TextView totalDuration, totalSlides;
+    TextView presentationName, totalDuration, totalSlides;
     TimeGraph timeGraph;
     CheckBox equallyDivided;
     Button  customAlertButton,
@@ -45,6 +49,7 @@ public class NewPresentationActivity extends Activity {
         createPresentationButton = (Button) findViewById(R.id.createPresentationButton);
 
         //get UI Components
+        presentationName = (TextView) findViewById(R.id.newPresentationName);
         totalDuration = (TextView) findViewById(R.id.totalDuration);
         totalSlides = (TextView) findViewById(R.id.totalSlides);
         timeGraphLayout = (LinearLayout) findViewById(R.id.timeGraphLayout);
@@ -53,7 +58,7 @@ public class NewPresentationActivity extends Activity {
         //timeGraph = new TimeGraph(timeGraphLayout);
 
 
-        //When CustomAlertButton clicked, call Custom Activity
+        //CustomAlertButton clicked, call Custom Activity
         customAlertButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -62,6 +67,30 @@ public class NewPresentationActivity extends Activity {
                 //Trigger Intent to CustomActivity to cutomize the time per slides
                 Intent intent = new Intent(NewPresentationActivity.this, CustomActivity.class);
                 NewPresentationActivity.this.startActivity(intent);
+
+            }
+        });
+
+        //CreatePresentationButton clicked, create presentation entry into database
+        createPresentationButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                //Perform validations
+                //Presentation name cannot have # / . : ? symbols
+
+
+                //Saving presentation into database
+                presentationDatabase = new PresentationDatabase(NewPresentationActivity.this);
+                if(presentationDatabase.insertPresentationDatabase( presentationName.getText().toString(), PresentationStructure.generateStringFromSlides())){
+                    Log.d(TAG, "Presentation data was inserted successfully!");
+                }
+
+                Intent intent = new Intent( NewPresentationActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+                finish();
 
             }
         });
@@ -102,7 +131,7 @@ public class NewPresentationActivity extends Activity {
                     totalDurationData = "1";
 
 
-                if(!Presentation_Structure.customTimeShared && createPresentationObject()){
+                if(!PresentationStructure.customTimeShared && createPresentationObject()){
                     equallyDivided.setEnabled(true);
                     timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
                 }
@@ -158,7 +187,7 @@ public class NewPresentationActivity extends Activity {
         //if yes --> current Activity returned from custom Activity
         // update the totalDuration textView
         if(presentation!=null){
-            totalDuration.setText(Integer.toString(Presentation_Structure.getTotalDuration()));
+            totalDuration.setText(Integer.toString(PresentationStructure.getTotalDuration()));
             timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
         }
 
@@ -205,7 +234,7 @@ public class NewPresentationActivity extends Activity {
         if(totalDurationData != null && totalSlidesData != null){
 
             timeinSec = Integer.parseInt(totalDurationData.toString());
-            presentation = Presentation_Structure.getPresentation(timeinSec, Integer.parseInt(totalSlidesData.toString()));
+            presentation = PresentationStructure.getPresentation(timeinSec, Integer.parseInt(totalSlidesData.toString()));
 
             return true;
         }

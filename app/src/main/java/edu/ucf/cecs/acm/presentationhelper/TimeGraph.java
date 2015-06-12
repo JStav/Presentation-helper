@@ -20,7 +20,7 @@ public class TimeGraph {
     private static String TAG = "TimeGraph";
     private LinearLayout graphLayout;
     private int totalWidth, totalHeight;
-    private Presentation_Structure current;
+    private PresentationStructure current;
     private View childView;
     private LinearLayout.LayoutParams thisChildParams;
 
@@ -36,14 +36,14 @@ public class TimeGraph {
     }
 
 
-    public void fillPeriod(Activity context, Presentation_Structure presentation){
+    public void fillPeriod(Activity context, PresentationStructure presentation){
 
 
 
         if(presentation != null){
 
             //store slide that has max. duration of all
-            int maxDuration = Presentation_Structure.getMaxDuration();
+            int maxDuration = PresentationStructure.getMaxDuration();
 
             //validation: check maxDuration greater than 0
             if(maxDuration>0) {
@@ -57,7 +57,7 @@ public class TimeGraph {
                     gap = MAX_GAP;
                     do{
 
-                        unitWidth = totalWidth/Presentation_Structure.getTotalSlides() - gap;
+                        unitWidth = totalWidth/ PresentationStructure.getTotalSlides() - gap;
                         gap--;
 
                     }while(gap>unitWidth);

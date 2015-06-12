@@ -17,7 +17,7 @@ public class CustomActivity extends Activity {
 
 
     LinearLayout editableViewGroup;
-    Presentation_Structure presentation, current;
+    PresentationStructure presentation, current;
     final int   MAX_GAP = 10,
             TOP_MARGIN = 50;
     int width, gap, sliceHeight, perWidth, totalSlides;
@@ -30,7 +30,7 @@ public class CustomActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom);
 
-        presentation = Presentation_Structure.getPresentation(Presentation_Structure.getTotalDuration(), Presentation_Structure.getTotalSlides());
+        presentation = PresentationStructure.getPresentation(PresentationStructure.getTotalDuration(), PresentationStructure.getTotalSlides());
 
         editableViewGroup = (LinearLayout) findViewById(R.id.editableViewGroup);
 
@@ -48,7 +48,7 @@ public class CustomActivity extends Activity {
             public void onClick(View v) {
 
                 current = presentation;
-                totalSlides = Presentation_Structure.getTotalSlides();
+                totalSlides = PresentationStructure.getTotalSlides();
 
                 while(current!=null){
                     view = (CustomEditText)findViewById(521450000+current.slideId());
@@ -82,7 +82,7 @@ public class CustomActivity extends Activity {
         view = new CustomEditText(this);
 
         current = presentation;
-        totalSlides = Presentation_Structure.getTotalSlides();
+        totalSlides = PresentationStructure.getTotalSlides();
 
         hiddenButton = new Button(this);
 
