@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +26,7 @@ public class NewPresentationActivity extends Activity {
     CheckBox equallyDivided;
     Button  customAlertButton,
             createPresentationButton;
+    int timeinSec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,25 +44,100 @@ public class NewPresentationActivity extends Activity {
         customAlertButton.setEnabled(false);
         createPresentationButton = (Button) findViewById(R.id.createPresentationButton);
 
+        //get UI Components
         totalDuration = (TextView) findViewById(R.id.totalDuration);
         totalSlides = (TextView) findViewById(R.id.totalSlides);
-
         timeGraphLayout = (LinearLayout) findViewById(R.id.timeGraphLayout);
 
-        timeGraph = new TimeGraph(timeGraphLayout);
+        //Object to call graph drawing methods
+        //timeGraph = new TimeGraph(timeGraphLayout);
 
+
+        //When CustomAlertButton clicked, call Custom Activity
         customAlertButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
+                //Trigger Intent to CustomActivity to cutomize the time per slides
                 Intent intent = new Intent(NewPresentationActivity.this, CustomActivity.class);
-                PipeObjects.pipe = presentation;
                 NewPresentationActivity.this.startActivity(intent);
 
             }
         });
 
+        //Check if the equallyDivided checkBox value is changed
+        equallyDivided.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
+
+                //Enable customActivityButton only when divideEqually is checked
+                if (isChecked) {
+                    customAlertButton.setEnabled(false);
+
+                    if(createPresentationObject())
+                         timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
+
+                } else {
+                    customAlertButton.setEnabled(true);
+                }
+            }
+        });
+
+
+        //Check if the totalDuration - editText value is changed or not
+        totalDuration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+                //check if textView is not empty else use 1(default)
+               if(s.length()!=0 && Integer.parseInt(s.toString())!=0)
+                    totalDurationData = s;
+                else
+                    totalDurationData = "1";
+
+
+                if(!Presentation_Structure.customTimeShared && createPresentationObject()){
+                    equallyDivided.setEnabled(true);
+                    timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
+                }
+
+            }
+
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        //Check if the totalSlides - editText value is changed or not
+        totalSlides.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                //check if textView is not empty else use 1(default)
+                if(s.length()!=0 && Integer.parseInt(s.toString())!=0)
+                    totalSlidesData = s;
+                else
+                    totalSlidesData = "1";
+
+                if(createPresentationObject()){
+                    equallyDivided.setEnabled(true);
+                    timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
     }
 
@@ -78,85 +153,28 @@ public class NewPresentationActivity extends Activity {
     {
         super.onResume();
 
-        if(PipeObjects.pipe!=null){
-            presentation = PipeObjects.pipe;
+
+        //check if presentation object is initialised or not
+        //if yes --> current Activity returned from custom Activity
+        // update the totalDuration textView
+        if(presentation!=null){
+            totalDuration.setText(Integer.toString(Presentation_Structure.getTotalDuration()));
+            timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
         }
 
-        //This event is triggered when all the UI elements are initially
+
+        //This event is triggered when all the UI elements are inflated
         timeGraphLayout.post(new Runnable() {
             @Override
             public void run() {
-                if (timeGraph != null) {
+                /*if (timeGraph != null && presentation!= null) {
                     timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
-                }
+                }*/
+                timeGraph = new TimeGraph(timeGraphLayout);
             }
         });
 
-        //Check if the equallyDivided - checkBox value is changed to what?
-        equallyDivided.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
 
-                if (isChecked) {
-                    customAlertButton.setEnabled(false);
-                } else {
-                    customAlertButton.setEnabled(true);
-                }
-            }
-        });
-
-        //Check if the totalDuration - editText value is changed or not
-        totalDuration.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                //check if textview is not empty else use 1(default)
-                if(s.length()!=0)
-                    totalDurationData = s;
-                else
-                    totalDurationData = "1";
-
-                if(totalDurationData!=null&&totalSlidesData != null){
-                    equallyDivided.setEnabled(true);
-                    presentation = Presentation_Structure.createPresentation(Integer.parseInt(totalSlidesData.toString()), Integer.parseInt(totalDurationData.toString()));
-                    timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        //Check if the totalSlides - editText value is changed or not
-        totalSlides.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                //check if textview is not empty else use 1(default)
-                if(s.length()!=0)
-                    totalSlidesData = s;
-                else
-                    totalSlidesData = "1";
-
-                if(totalDurationData!=null&&totalSlidesData != null){
-                    equallyDivided.setEnabled(true);
-
-                    presentation = Presentation_Structure.createPresentation(Integer.parseInt(totalSlidesData.toString()), Integer.parseInt(totalDurationData.toString()));
-                    timeGraph.fillPeriod(NewPresentationActivity.this, presentation);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
 
     }
 
@@ -181,4 +199,17 @@ public class NewPresentationActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public boolean createPresentationObject(){
+
+        if(totalDurationData != null && totalSlidesData != null){
+
+            timeinSec = Integer.parseInt(totalDurationData.toString());
+            presentation = Presentation_Structure.getPresentation(timeinSec, Integer.parseInt(totalSlidesData.toString()));
+
+            return true;
+        }
+        return false;
+    }
+
 }

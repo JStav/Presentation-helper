@@ -4,97 +4,122 @@ package edu.ucf.cecs.acm.presentationhelper;
  * Created by kishoredebnath on 01/04/15.
  */
 public class Presentation_Structure {
-    private int minDuration = 2;
-    private boolean head;
-    private boolean customDuration;
-    private boolean recentEdit;
-    private int currentSlide;
+
+    //Static data to all the slide objects
+    private static int slideId;
+    private static int totalDuration, totalSlides, maxDuration = 2;
+    public static Presentation_Structure presentation = null;
+    public static boolean customTimeShared = false;
+
+    private int sId;
     private int currentDuration;
-    public int totalSlides;
-    public int maxDuration = minDuration;
+    //public int totalSlides;
     public Presentation_Structure nextSlide;
-    private Presentation_Structure(int totalSlides, int currentDuration){
-        this.head = this.recentEdit = false;
-        this.totalSlides = totalSlides;
-        this.currentDuration = currentDuration;
-        this.customDuration = false;
-        this.maxDuration = currentDuration;
+
+
+    //Constructor per slide - slide builder
+    private Presentation_Structure(int duration, int slideId){
+
+        this.currentDuration = duration;
+        this.sId = slideId;
+        this.nextSlide = null;
     }
 
-    public static Presentation_Structure createPresentation(int totalSlides, int totalDuration){
-
-        Presentation_Structure headSlides = null,
-                                previousSlide = null;
-
-        int slides = totalSlides,
-            eachDuration = 0;
-        if(totalSlides>0) {
-            eachDuration = totalDuration / totalSlides;
-            do {
-                if(headSlides == null){
-                    headSlides = new Presentation_Structure(totalSlides, eachDuration);
-                    headSlides.head = true;
-                    headSlides.currentSlide = 1;
-                    previousSlide = headSlides;
-                }else {
-                    previousSlide.nextSlide = new Presentation_Structure(totalSlides, eachDuration);
-                    previousSlide.nextSlide.currentSlide = previousSlide.currentSlide+1;
-                    previousSlide = previousSlide.nextSlide;
-                }
-            }while(--slides>0);
-            previousSlide.nextSlide = null;
-        }
-        return headSlides;
-    }
-
-    public void editPresentation(int slideIdentity, int editDuration){
-        Presentation_Structure current = this;
-
-        int changedDuration = 0;
-
-        while(current.currentSlide!=slideIdentity && current!=null){
-            current = current.nextSlide;
-        }
-
-        changedDuration = editDuration - current.currentDuration ;
-        current.currentDuration = editDuration;
-        current.recentEdit = true;
-
-        if(current.currentDuration > this.maxDuration){
-            this.maxDuration = currentDuration;
-        }
-
-        current = this;
-
-        while(changedDuration!=0&&current!=null){
-            if (current.recentEdit == true) {
-                current = current.nextSlide;
-                continue;
+    //Create Presentation for the given number of slides each with time: duration
+    private static void createPresentation(int duration){
+        if(Presentation_Structure.totalSlides>0) {
+            slideId = 1;
+            if(presentation == null) {
+                presentation = new Presentation_Structure(duration, slideId);
+            }else {
+                presentation.currentDuration = duration;
             }
-            if (current.recentEdit ==  false){
-                if(current.currentDuration - changedDuration > minDuration){
-                    current.currentDuration =- changedDuration;
-                    if(current.currentDuration > this.maxDuration){
-                        this.maxDuration = currentDuration;
-                    }
-                    changedDuration = 0;
-                    break;
+
+            Presentation_Structure current = presentation;
+
+            for(int i = 1; i<Presentation_Structure.totalSlides; i++){
+                slideId++;
+                if(current.nextSlide == null) {
+                    current.nextSlide = new Presentation_Structure(duration, slideId);
                 }else{
-                    changedDuration = current.currentDuration - minDuration;
-                    current.currentDuration = minDuration;
-                    current = current.nextSlide;
+                    current.nextSlide.currentDuration = duration;
                 }
+                current = current.nextSlide;
             }
+            current.nextSlide = null;
+            maxDuration = duration;
         }
+    }
+
+    //Returns the Singleton head pointer pointing to the slides of the presentations
+    public static Presentation_Structure getPresentation(int totalDuration, int totalSlides){
+
+        int slideDuration = 0;
+
+        if(presentation == null){
+
+            Presentation_Structure.totalDuration = totalDuration;
+            Presentation_Structure.totalSlides = totalSlides;
+            slideDuration = totalDuration/totalSlides;
+
+            createPresentation(slideDuration);
+
+            return presentation;
+
+        }else{
+            //return the same presentation object if the duration and number of slides are same
+            if(totalDuration == Presentation_Structure.totalDuration && totalSlides==Presentation_Structure.totalSlides && !Presentation_Structure.customTimeShared){
+
+
+                return presentation;
+
+            }else{
+
+                //update the duration or slide accordingly and return the presentation object
+
+                Presentation_Structure.totalDuration = totalDuration;
+                Presentation_Structure.totalSlides = totalSlides;
+                slideDuration = totalDuration/totalSlides;
+
+                Presentation_Structure.customTimeShared = false;
+                createPresentation(slideDuration);
+
+                return presentation;
+
+            }
+
+        }
+
     }
 
     public int slideId(){
-        return this.currentSlide;
+        return this.sId;
     }
 
     public int getDuration(){
         return this.currentDuration;
     }
 
-    public void setDuration(int x){this.currentDuration = x;}
+    public void setDuration(int duration){
+
+        if(!Presentation_Structure.customTimeShared) {
+            Presentation_Structure.customTimeShared = true;
+        }
+
+        Presentation_Structure.totalDuration += duration-this.currentDuration;
+
+        if(duration-this.currentDuration>0&&Presentation_Structure.maxDuration>duration){
+            Presentation_Structure.maxDuration = duration;
+        }
+
+        this.currentDuration = duration;
+
+    }
+
+    public static int getTotalDuration(){return Presentation_Structure.totalDuration;}
+
+    public static int getTotalSlides(){return Presentation_Structure.totalSlides;}
+
+    public static int getMaxDuration(){return Presentation_Structure.maxDuration;}
+
 }
