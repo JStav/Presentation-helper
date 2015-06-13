@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by kishoredebnath on 12/06/15.
  */
@@ -71,11 +73,11 @@ public class PresentationDatabase {
         this.sqLiteHelper = new SQLiteHelper(context, dbName, dbVersion, dbTableName, dbCreateTableQuery);
     }
 
-    public void open() throws SQLException{
+    private void open() throws SQLException{
         sqLiteDatabase = sqLiteHelper.getReadableDatabase();
     }
 
-    public void close(){
+    private void close(){
         sqLiteHelper.close();
     }
 
@@ -162,11 +164,12 @@ public class PresentationDatabase {
     }
 
     //get presentation on basis of index, example index = * gets all the table entries separated by #
-    public String getPresentationDatabase(String index){
+    public ArrayList<String> getPresentationDatabase(String index){
 
         try{
 
-            String selectQueryCursor, selectQueryResult = null;
+            String selectQueryCursor, selectQueryResult;
+            ArrayList<String> selectQueryResultArrayList = new ArrayList<String>();
             Cursor cursor;
 
             this.open();
@@ -180,12 +183,16 @@ public class PresentationDatabase {
                if(cursor.moveToFirst()){
                    do{
 
+                       selectQueryResult = "";
                        selectQueryResult += cursor.getString(cursor.getColumnIndexOrThrow(dbTablePresentationName));
                        selectQueryResult += "#"+cursor.getString(cursor.getColumnIndexOrThrow(dbTablePresentationContent));
-                       selectQueryResult += "?";
+
+                       selectQueryResultArrayList.add(selectQueryResult);
+
 
                    }while(cursor.moveToNext());
                }
+               cursor.close();
 
 
            }else{
@@ -199,6 +206,9 @@ public class PresentationDatabase {
                    selectQueryResult = cursor.getString(cursor.getColumnIndexOrThrow(dbTablePresentationName));
                    selectQueryResult += "#"+cursor.getString(cursor.getColumnIndexOrThrow(dbTablePresentationContent));
 
+                   selectQueryResultArrayList.add(selectQueryResult);
+
+
                }else{
                    Log.e(TAG, "Cannot retrieve Presentation data from DB.");
 
@@ -208,7 +218,7 @@ public class PresentationDatabase {
 
             this.close();
 
-            return selectQueryResult;
+            return selectQueryResultArrayList;
 
         }catch(Exception e){
 
